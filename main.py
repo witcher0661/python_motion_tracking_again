@@ -8,7 +8,9 @@ def main():
     # Initialize Tracker
     tracker = Tracker(r"C:\Users\44780\Documents\python_motion_tracking_again\models\best.pt")
 
-    tracks = tracker.get_object_tracks(video_frames)
+    tracks = tracker.get_object_tracks(video_frames,
+                                       read_from_stub=True,
+                                       stub_path='stubs/track_stubs.pkl')
 
     # Save video
     save_video(video_frames, r"C:\Users\44780\Documents\python_motion_tracking_again\output\output_video.avi")
