@@ -18,7 +18,9 @@ class Tracker:
 
     def get_object_tracks(self, frames, read_from_stub=False, stub_path=None):
         
-        detections = self.detect_frames(frames)
+        detections = self.detect_frames(frames,
+                                        read_from_stub=True,
+                                       stub_path='stubs/track_stubs.pkl')
 
         if read_from_stub and stub_path is not None and os.path.exists(stub_path):
             with open(stub_path,'rb') as f:
