@@ -9,20 +9,23 @@ class Tracker:
         self.tracker = sv.ByteTrack()
 
     def detect_frames(self, frames):
-        batch_size=20 
-        detections = [] 
-        for i in range(0,len(frames),batch_size):
-            detections_batch = self.model.predict(frames[i:i+batch_size],conf=0.1)
+        batch_size = 20
+        detections = []
+        total_frames = sum(1 for _ in frames)  # Count total frames
+        frames = list(frames)  # Convert generator to list
+    
+        for i in range(0, total_frames, batch_size):
+            print(f"Processing frames {i} to {min(i+batch_size, total_frames)} out of {total_frames}")
+            detections_batch = self.model.predict(frames[i:i+batch_size], conf=0.1)
             detections += detections_batch
         return detections
 
-    def get_object_tracks(self, frames, read_from_stub=False, stub_path=None):
-        
-        detections = self.detect_frames(frames)
+    def get_object_tracks(self, frames, read_from_stub=False, stub_path=None, video_path=None):
 
         if read_from_stub and stub_path is not None and os.path.exists(stub_path):
-            with open(stub_path,'rb') as f:
+            with open(stub_path, 'rb') as f:
                 tracks = pickle.load(f)
+
             return tracks
 
         tracks={
