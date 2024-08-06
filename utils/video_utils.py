@@ -2,17 +2,26 @@ import cv2
 
 def read_video(video_path):
     cap = cv2.VideoCapture(video_path)
-    frames = []
     while True:
         ret, frame = cap.read()
         if not ret:
             break
-        frames.append(frame)
-    return frames
+        yield frame
+    cap.release()
 
-def save_video(ouput_video_frames,output_video_path):
+def save_video(video_frames, output_video_path):
+    # Get the first frame to determine video properties
+    first_frame = next(video_frames)
+    height, width = first_frame.shape[:2]
+
     fourcc = cv2.VideoWriter_fourcc(*'XVID')
-    out = cv2.VideoWriter(output_video_path, fourcc, 24, (ouput_video_frames[0].shape[1], ouput_video_frames[0].shape[0]))
-    for frame in ouput_video_frames:
+    out = cv2.VideoWriter(output_video_path, fourcc, 24, (width, height))
+
+    # Write the first frame
+    out.write(first_frame)
+
+    # Write the rest of the frames
+    for frame in video_frames:
         out.write(frame)
+
     out.release()
